@@ -65,3 +65,4 @@ yargs.command({
 });
 
 yargs.parse();
+//how to run
