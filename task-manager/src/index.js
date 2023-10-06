@@ -17,7 +17,7 @@ const port = process.env.PORT;
 //or
 // res.status(504).send("Method not allowed");
 // });
-
+app.use(express.static("public"));
 app.use(express.json());
 app.use(UserRouter);
 app.use(TaskRouter);

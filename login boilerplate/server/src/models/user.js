@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Task = require("./task");
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
+      default: "Rajan",
       trim: true,
     },
     age: {
@@ -39,36 +39,21 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    tokens: [
-      {
-        token: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
-    avatar: {
-      type: Buffer,
+    token: {
+      type: String,
     },
   },
+  // to make createdat and updatedat
   {
     timestamps: true,
   }
 );
 
-// join task and user
-userSchema.virtual("tasks", {
-  ref: "Task",
-  localField: "_id",
-  foreignField: "owner",
-});
-// show only required data
+// show only required data or to send to frontend what we want
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
   delete userObject.password;
-  delete userObject.tokens;
-  delete userObject.avatar;
 
   return userObject;
 };
@@ -76,8 +61,10 @@ userSchema.methods.toJSON = function () {
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
 
-  const token = jwt.sign({ _id: user._id.toString() }, process.env.SECRET_KEY);
-  user.tokens = user.tokens.concat({ token });
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.SECRET_KEY, {
+    expiresIn: "12h",
+  });
+  user.token = token;
   await user.save();
   return token;
 };
@@ -102,12 +89,6 @@ userSchema.pre("save", async function (next) {
   if (user.isModified("password")) {
     user.password = await bcrypt.hash(user.password, 8);
   }
-  next();
-});
-
-userSchema.pre("deleteOne", { document: true }, async function (next) {
-  const user = this;
-  await Task.deleteMany({ owner: user._id });
   next();
 });
 
