@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="row">
+    <div class="row" v-if="isloggedin">
       <div class="col-6">
         <table class="table table-striped" v-if="temp.value">
           <thead>
@@ -17,31 +17,48 @@
           </tbody>
         </table>
       </div>
+
+      <div class="col-6">
+        <button class="btn btn-danger" @click="logout()">Logout</button>
+        <button class="btn btn-danger" @click="deleteuser()">delete</button>
+      </div>
+      <div class="col-12">
+        <UserDetail />
+      </div>
     </div>
-    <div class="col-6">
-      <button class="btn btn-danger" @click="logout()">Logout</button>
-      <button class="btn btn-danger" @click="deleteuser()">delete</button>
+    <div class="row" v-else>
+      <div class="col-12">
+        <div class="alert alert-danger" role="alert">you are not logged in</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onBeforeMount, reactive } from "vue";
+import UserDetail from "../components/UserDetail.vue";
+import { onBeforeMount, reactive, ref, provide } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import cookies from "vue-cookies";
 
 const router = useRouter();
+let isloggedin = ref(false);
 let temp = reactive({});
-
+provide("temp", temp);
 async function getdetails() {
-  const response = await axios.get("http://localhost:3000/users/me", {
-    headers: {
-      // Authorization: `Bearer ${localStorage.getItem("token")}`,
-      Authorization: `Bearer ${this.$cookies.get("token")}`,
-    },
-  });
-
-  temp.value = response.data;
+  try {
+    const response = await axios.get("http://localhost:3000/users/me", {
+      headers: {
+        // Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${cookies.get("token")}`,
+      },
+    });
+    isloggedin.value = true;
+    temp.value = response.data;
+  } catch (error) {
+    console.log(error.response.data);
+    isloggedin.value = false;
+  }
 
   // console.log(temp);
 }
@@ -51,17 +68,17 @@ onBeforeMount(() => {
 });
 
 function logout() {
-  localStorage.removeItem("token");
+  cookies.remove("token");
   router.push("/login");
 }
 
 function deleteuser() {
   axios.delete("http://localhost:3000/users/me", {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${cookies.get("token")}`,
     },
   });
-  localStorage.removeItem("token");
+  cookies.remove("token");
   router.push("/");
 }
 </script>

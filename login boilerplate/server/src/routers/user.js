@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
     message: "Welcome to the API.",
   });
 });
-//for sending data to database
+//for signin user
 router.post("/users/signin", async (req, res) => {
   const user = new User(req.body);
   try {

@@ -77,9 +77,10 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
-
+import cookies from "vue-cookies";
 const router = useRouter();
 
 const sign = {
@@ -93,7 +94,7 @@ async function signin() {
   const response = await axios.post("http://localhost:3000/users/signin", sign);
   const token = response.data.token;
   // localStorage.setItem("token", token);
-  this.$cookies.set("token", token);
+  cookies.set("token", token);
   router.push("/user");
 }
 
@@ -102,14 +103,25 @@ const logi = {
   password: "",
 };
 async function login() {
-  // console.log(logi);
-  const response = await axios.post("http://localhost:3000/users/login", logi);
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/users/login",
+      logi
+    );
 
-  const token = response.data.token;
-  // localStorage.setItem("token", token);
-  this.$cookies.set("token", token);
-  router.push("/user");
+    const token = response.data.token;
+    // localStorage.setItem("token", token);
+    cookies.set("token", token);
+    router.push("/user");
+  } catch (error) {
+    console.log(error.response.data);
+  }
 }
+onMounted(() => {
+  if (cookies.get("token")) {
+    router.push("/user");
+  }
+});
 </script>
 
 <style scoped></style>

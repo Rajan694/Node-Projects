@@ -5,7 +5,7 @@
     <div class="container-fluid">
       <RouterLink to="/" class="navbar-brand mb-1 p-1 ms-1"
         ><img
-          src="../../assets/logo.svg"
+          src="../../../public/favicon.ico"
           alt="Logo"
           width="30"
           height="24"
@@ -30,31 +30,35 @@
       >
         <div class="navbar-nav me-auto">
           <RouterLink
-            class="nav-link mb-1 p-1 ms-1"
+            class="nav-link mb-1 p-1 ms-1 rounded-1"
             active-class="active bg-secondary"
             @click="show = 'collapse'"
             to="/login"
             >Login&signin</RouterLink
           >
           <RouterLink
-            class="nav-link mb-1 p-1 ms-1"
+            class="nav-link mb-1 p-1 ms-1 rounded-1"
             active-class="active bg-secondary"
             @click="show = 'collapse'"
             to="/user"
             >Details</RouterLink
           >
-          <RouterLink
-            class="nav-link mb-1 p-1 ms-1"
-            active-class="active bg-secondary"
-            @click="show = 'collapse'"
-            to="/userdetail"
-            >More Details</RouterLink
-          >
         </div>
         <div class="navbar-nav mb-1 ms-1">
-          <button class="btn btn-outline-primary" @click="myfunc">
-            Change Theme
-          </button>
+          <div @click="toggletheme()">
+            <img
+              v-if="theme == 'light'"
+              src="../../assets/icons8-moon-90.png"
+              alt="moon"
+              style="cursor: pointer; width: 30px; height: 30px"
+            />
+            <img
+              v-if="theme == 'dark'"
+              src="../../assets/icons8-sun-240.png"
+              alt="sun"
+              style="cursor: pointer; width: 30px; height: 30px"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -65,10 +69,12 @@
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
 let show = ref("");
-const myfunc = () => {
+let theme = ref("dark");
+const toggletheme = () => {
   let element = document.body;
   element.dataset.bsTheme =
     element.dataset.bsTheme == "dark" ? "light" : "dark";
+  theme.value = element.dataset.bsTheme;
 };
 </script>
 
