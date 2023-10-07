@@ -39,9 +39,6 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    token: {
-      type: String,
-    },
   },
   // to make createdat and updatedat
   {
@@ -57,15 +54,16 @@ userSchema.methods.toJSON = function () {
 
   return userObject;
 };
-//create token and save
+//create token and send to frontend
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
 
   const token = jwt.sign({ _id: user._id.toString() }, process.env.SECRET_KEY, {
     expiresIn: "12h",
   });
-  user.token = token;
+
   await user.save();
+  // console.log(token);
   return token;
 };
 

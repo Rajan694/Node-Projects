@@ -5,6 +5,7 @@ const User = require("../models/user.js");
 const auth = require("../middleware/auth.js");
 
 // for user -------------------------------------------------------------
+
 //home screen
 router.get("/", (req, res) => {
   res.status(201).json({
@@ -34,7 +35,8 @@ router.post("/users/login", async (req, res) => {
     );
     console.log(user);
     const token = await user.generateAuthToken();
-    res.send({ token });
+    console.log(token);
+    res.status(201).send({ token });
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -56,7 +58,7 @@ router.post("/users/logout", auth, async (req, res) => {
 
 router.get("/users/me", auth, async (req, res) => {
   try {
-    res.send(req.user);
+    res.status(200).send(req.user);
   } catch (error) {
     res.status(500).send(error);
   }
