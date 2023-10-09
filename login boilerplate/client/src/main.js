@@ -8,7 +8,7 @@ import router from "./router/router.js";
 const app = createApp(App);
 app.use(bootstrap);
 app.use(vueCookies, {
-  expires: 25,
+  expires: 5,
 });
 app.use(router);
 app.mount("#app");

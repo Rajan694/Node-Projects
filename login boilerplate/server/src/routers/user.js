@@ -19,10 +19,11 @@ router.post("/users/signin", async (req, res) => {
     console.log(user);
     // await user.save();
     const token = await user.generateAuthToken();
+    console.log(token);
+    res.cookie("toke", token, { maxAge: 5000, httpOnly: true });
     res.status(201).send({ token });
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    res.status(400).send(error.message);
   }
 });
 
@@ -36,6 +37,7 @@ router.post("/users/login", async (req, res) => {
     console.log(user);
     const token = await user.generateAuthToken();
     console.log(token);
+    res.cookie("toke", token, { maxAge: 5000, httpOnly: true });
     res.status(201).send({ token });
   } catch (error) {
     res.status(400).send(error.message);
@@ -48,7 +50,8 @@ router.post("/users/logout", auth, async (req, res) => {
   try {
     req.user.token = "";
     await req.user.save();
-    res.send("Logged out");
+    res.clearCookie("toke");
+    res.status(201).send("Logged out");
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -58,7 +61,8 @@ router.post("/users/logout", auth, async (req, res) => {
 
 router.get("/users/me", auth, async (req, res) => {
   try {
-    res.status(200).send(req.user);
+    // console.log(req.cookie("token"));
+    res.status(201).send(req.user);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -97,7 +101,8 @@ router.patch("/users/me", auth, async (req, res) => {
 router.delete("/users/me", auth, async (req, res) => {
   try {
     const user = await User.deleteOne({ _id: req.user._id });
-    res.send({ user });
+    res.clearCookie("toke");
+    res.status(201).send({ user });
   } catch (error) {
     res.status(500).send(error.message);
   }

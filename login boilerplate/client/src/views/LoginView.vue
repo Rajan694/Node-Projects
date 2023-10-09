@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <!-- ------------------------------------------------------------------------------------------- -->
-      <div class="col-6">
+      <div class="col-sm-12 col-md-6">
         <h1>signin page</h1>
         <form @submit.prevent="signin()">
           <div class="mb-3">
@@ -46,7 +46,7 @@
         </form>
       </div>
       <!-- ------------------------------------------------------------------------------------------- -->
-      <div class="col-6">
+      <div class="col-sm-12 col-md-6">
         <h1>login page</h1>
         <form @submit.prevent="login()">
           <div class="mb-3">
@@ -91,11 +91,19 @@ const sign = {
 };
 
 async function signin() {
-  const response = await axios.post("http://localhost:3000/users/signin", sign);
-  const token = response.data.token;
-  // localStorage.setItem("token", token);
-  cookies.set("token", token);
-  router.push("/user");
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/users/signin",
+      sign,
+      { withCredentials: true }
+    );
+    const token = response.data.token;
+    // localStorage.setItem("token", token);
+    cookies.set("token", token);
+    router.push("/user");
+  } catch (error) {
+    console.log(error.data);
+  }
 }
 
 const logi = {
@@ -106,7 +114,8 @@ async function login() {
   try {
     const response = await axios.post(
       "http://localhost:3000/users/login",
-      logi
+      logi,
+      { withCredentials: true }
     );
 
     const token = response.data.token;
