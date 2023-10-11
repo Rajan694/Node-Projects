@@ -45,18 +45,41 @@
           >
         </div>
         <div class="navbar-nav mb-1 ms-1">
+          <!-- \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
+          <div>
+            <input
+              type="checkbox"
+              class="checkbox"
+              id="checkbox"
+              @click="toggletheme()"
+            />
+            <label for="checkbox" class="checkbox-label">
+              <img
+                src="../../assets/moon.svg"
+                alt="moon"
+                style="width: 15px; height: 15px"
+              />
+              <img
+                src="../../assets/sun.svg"
+                alt="sun"
+                style="width: 15px; height: 15px"
+              />
+              <span class="ball"></span>
+            </label>
+          </div>
+          <!-- \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ -->
           <div @click="toggletheme()">
             <img
               v-if="theme == 'light'"
               src="../../assets/icons8-moon-90.png"
               alt="moon"
-              style="cursor: pointer; width: 30px; height: 30px"
+              style="cursor: pointer; width: 22px; height: 22px"
             />
             <img
               v-if="theme == 'dark'"
               src="../../assets/icons8-sun-240.png"
               alt="sun"
-              style="cursor: pointer; width: 30px; height: 30px"
+              style="cursor: pointer; width: 22px; height: 22px"
             />
           </div>
         </div>
@@ -78,4 +101,37 @@ const toggletheme = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.checkbox {
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox-label {
+  background-color: #111;
+  width: 50px;
+  height: 26px;
+  border-radius: 50px;
+  position: relative;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkbox-label .ball {
+  background-color: #fff;
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  border-radius: 50%;
+  transition: transform 0.2s linear;
+}
+
+.checkbox:checked + .checkbox-label .ball {
+  transform: translateX(24px);
+}
+</style>
