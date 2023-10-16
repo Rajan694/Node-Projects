@@ -71,13 +71,13 @@
           <div @click="toggletheme()">
             <img
               v-if="theme == 'light'"
-              src="../../assets/icons8-moon-90.png"
+              src="../../assets/moon.svg"
               alt="moon"
               style="cursor: pointer; width: 22px; height: 22px"
             />
             <img
               v-if="theme == 'dark'"
-              src="../../assets/icons8-sun-240.png"
+              src="../../assets/sun.svg"
               alt="sun"
               style="cursor: pointer; width: 22px; height: 22px"
             />
@@ -93,11 +93,17 @@ import { ref } from "vue";
 import { RouterLink } from "vue-router";
 let show = ref("");
 let theme = ref("dark");
+// const toggletheme = () => {
+//   let element = document.body;
+//   element.dataset.bsTheme =
+//     element.dataset.bsTheme == "dark" ? "light" : "dark";
+//   theme.value = element.dataset.bsTheme;
+// };
 const toggletheme = () => {
   let element = document.body;
-  element.dataset.bsTheme =
-    element.dataset.bsTheme == "dark" ? "light" : "dark";
-  theme.value = element.dataset.bsTheme;
+  console.log(element);
+  element.dataset.theme = element.dataset.theme == "dark" ? "light" : "dark";
+  theme.value = element.dataset.theme;
 };
 </script>
 

@@ -4,10 +4,16 @@ const User = require("../models/user.js");
 const auth = require("../middleware/auth.js");
 // for user -------------------------------------------------------------
 //home screen
-router.get("/", (req, res) => {
-  res.status(201).json({
-    message: "Welcome to the API.",
-  });
+router.get("/", (req, res, next) => {
+  // console.log(x);
+  try {
+    throw new Error("this uncaught error");
+    res.status(201).json({
+      message: "Welcome to the API.",
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 //for signin user
 router.post("/users/signin", async (req, res) => {
@@ -17,7 +23,7 @@ router.post("/users/signin", async (req, res) => {
     // await user.save();
     const token = await user.generateAuthToken();
     console.log(token);
-    res.cookie("toke", token, { maxAge: 5000, httpOnly: true });
+    res.cookie("toke", token, { maxAge: 50000, httpOnly: true });
     res.status(201).send({ token });
   } catch (error) {
     console.log(error);
@@ -36,7 +42,7 @@ router.post("/users/login", async (req, res) => {
     console.log(user);
     const token = await user.generateAuthToken();
     console.log(token);
-    res.cookie("toke", token, { maxAge: 5000, httpOnly: true });
+    res.cookie("toke", token, { maxAge: 50000, httpOnly: true });
     res.status(201).send({ token });
   } catch (error) {
     res.status(400).send(error.message);
@@ -58,7 +64,6 @@ router.post("/users/logout", auth, async (req, res) => {
 
 router.get("/users/me", auth, async (req, res) => {
   try {
-    res.status(200).send(req.user);
     // console.log(req.cookie("token"));
     res.status(201).send(req.user);
   } catch (error) {
