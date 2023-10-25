@@ -1,10 +1,10 @@
-process.on("uncaughtException", function (err) {
+process.once("uncaughtException", function (err) {
   console.error(err.name, err.message);
   console.log("uncaughtException occurs, shutting down");
 
   process.exit(1);
 });
-process.on("unhandledRejection", (reason, promise) => {
+process.once("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection:", reason);
   console.error("Unhandled Rejection at:", promise);
 
