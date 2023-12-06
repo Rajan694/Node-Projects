@@ -21,6 +21,7 @@ const Results = ({ results }) => {
           <div className="d-flex mb-3" key={result.link}>
             <div className="me-3">
               <img
+                className="rounded"
                 width={200}
                 height={200}
                 src={result.img}
