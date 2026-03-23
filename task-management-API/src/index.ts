@@ -1,9 +1,13 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+import { Request, Response } from 'express';
+import express from 'express';
+import dotenv from 'dotenv';
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+const app = express();
+dotenv.config({ quiet: true });
+const port = process.env.PORT || 5000;
+
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).send('Hello World!');
 });
 
 app.listen(port, () => {
