@@ -3,20 +3,24 @@ import { Status } from '../generated/prisma/enums';
 import { prisma } from '../lib/prisma';
 import { createError } from '../utils/AppError';
 
-export const getAllTasksService = async (status?: Status) => {
-  const result = status
-    ? await prisma.task.findMany({
-        where: { status },
-        orderBy: { createdAt: 'desc' },
-      })
-    : await prisma.task.findMany({
-        orderBy: { createdAt: 'desc' },
-      });
+export const getAllTasksService = async (status?: Status, page: number = 1, limit: number = 10) => {
+  const skip = (page - 1) * limit;
 
-  if (!result || result.length === 0) {
-    throw createError('No tasks found with the specified status.', 404);
-  }
-  return result;
+  const whereClause = status ? { status } : {};
+
+  const [tasks, total] = await Promise.all([
+    prisma.task.findMany({
+      where: whereClause,
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+    prisma.task.count({
+      where: whereClause,
+    }),
+  ]);
+
+  return { tasks, total };
 };
 
 export const getTaskByIdService = async (id: string) => {
