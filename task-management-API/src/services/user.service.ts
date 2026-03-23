@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma';
-import { AppError } from '../utils/AppError';
+import { createError } from '../utils/AppError';
 
 export const getAllUsersService = async () => {
   const result = await prisma.user.findMany({
@@ -12,7 +12,7 @@ export const getAllUsersService = async () => {
     },
   });
   if (!result || result.length === 0) {
-    throw new AppError('No users found.', 404);
+    throw createError('No users found.', 404);
   }
   return result;
 };
@@ -29,7 +29,7 @@ export const getUserByIdService = async (id: string) => {
     },
   });
   if (!result) {
-    throw new AppError(`User with ID ${id} not found.`, 404);
+    throw createError(`User with ID ${id} not found.`, 404);
   }
   return result;
 };
@@ -49,7 +49,7 @@ export const createUserService = async (data: any) => {
 export const updateUserByIdService = async (id: string, data: any) => {
   const userExists = await prisma.user.findUnique({ where: { id } });
   if (!userExists) {
-    throw new AppError(`Cannot update. User with ID ${id} not found.`, 404);
+    throw createError(`Cannot update. User with ID ${id} not found.`, 404);
   }
   return await prisma.user.update({
     where: { id },
@@ -67,7 +67,7 @@ export const updateUserByIdService = async (id: string, data: any) => {
 export const deleteUserByIdService = async (id: string) => {
   const userExists = await prisma.user.findUnique({ where: { id } });
   if (!userExists) {
-    throw new AppError(`Cannot delete. User with ID ${id} not found.`, 404);
+    throw createError(`Cannot delete. User with ID ${id} not found.`, 404);
   }
   return await prisma.user.delete({
     where: { id },
