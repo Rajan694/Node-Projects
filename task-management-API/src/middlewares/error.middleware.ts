@@ -7,7 +7,5 @@ export const errorMiddleware = (err: any, req: Request, res: Response, next: Nex
   res.status(statusCode).json({
     success: err.success ?? false,
     message,
-    // Add stack trace only in development if needed
-    // stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
   });
 };
