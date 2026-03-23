@@ -1,3 +1,4 @@
+import { User } from '../generated/prisma/client';
 import { prisma } from '../lib/prisma';
 import { createError } from '../utils/AppError';
 
@@ -34,7 +35,7 @@ export const getUserByIdService = async (id: string) => {
   return result;
 };
 
-export const createUserService = async (data: any) => {
+export const createUserService = async (data: User) => {
   return await prisma.user.create({
     data,
     select: {
@@ -46,7 +47,7 @@ export const createUserService = async (data: any) => {
     },
   });
 };
-export const updateUserByIdService = async (id: string, data: any) => {
+export const updateUserByIdService = async (id: string, data: User) => {
   const userExists = await prisma.user.findUnique({ where: { id } });
   if (!userExists) {
     throw createError(`Cannot update. User with ID ${id} not found.`, 404);

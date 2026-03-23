@@ -1,3 +1,4 @@
+import { Task } from '../generated/prisma/client';
 import { Status } from '../generated/prisma/enums';
 import { prisma } from '../lib/prisma';
 import { createError } from '../utils/AppError';
@@ -28,14 +29,13 @@ export const getTaskByIdService = async (id: string) => {
   return result;
 };
 
-export const createTaskService = async (data: any) => {
-  console.log('🚀 ~ createTaskService ~ data:', data);
+export const createTaskService = async (data: Task) => {
   return await prisma.task.create({
     data,
   });
 };
 
-export const updateTaskService = async (id: string, data: any) => {
+export const updateTaskService = async (id: string, data: Task) => {
   const taskExists = await prisma.task.findUnique({ where: { id } });
   if (!taskExists) {
     throw createError(`Cannot update. Task with ID ${id} not found.`, 404);
