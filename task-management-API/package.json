@@ -2,6 +2,7 @@
   "name": "task-management-api",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon --quiet --ext ts,json --exec ts-node src/index.ts"
   },
@@ -9,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@types/express": "^5.0.6",
     "dotenv": "^17.3.1",
