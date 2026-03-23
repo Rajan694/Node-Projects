@@ -1,27 +1,41 @@
 import { Request, Response } from 'express';
-import { getAllTasks } from '../services/task.service';
+import {
+  getAllTasksService,
+  getTaskByIdService,
+  createTaskService,
+  updateTaskService,
+  deleteTaskService,
+} from '../services/task.service';
+import { Status } from '../generated/prisma/enums';
+import { asyncHandler } from '../utils/asyncHandler';
+import { sendSuccess } from '../utils/response';
 
-export const getTasks = async (req: Request, res: Response) => {
-  try {
-    const tasks = await getAllTasks();
-    if (!tasks) {
-      return res.status(404).json({
-        success: false,
-        message: 'No tasks found',
-      });
-    }
-    res.status(200).json({
-      success: true,
-      data: tasks,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch tasks',
-    });
-  }
-};
-export const getTaskById = (req: Request, res: Response) => {};
-export const createTask = (req: Request, res: Response) => {};
-export const updateTask = (req: Request, res: Response) => {};
-export const deleteTask = (req: Request, res: Response) => {};
+export const getTasks = asyncHandler(async (req: Request, res: Response) => {
+  const status = req.query?.status as Status;
+  const tasks = await getAllTasksService(status);
+  sendSuccess(res, tasks);
+});
+
+export const getTaskById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const task = await getTaskByIdService(id as string);
+  sendSuccess(res, task);
+});
+
+export const createTask = asyncHandler(async (req: Request, res: Response) => {
+  const result = await createTaskService(req.body);
+  sendSuccess(res, result, 201);
+});
+
+export const updateTask = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await updateTaskService(id as string, req.body);
+  sendSuccess(res, result);
+});
+
+export const deleteTask = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await deleteTaskService(id as string);
+  sendSuccess(res, result);
+});
+

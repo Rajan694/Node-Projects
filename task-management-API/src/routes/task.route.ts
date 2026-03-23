@@ -1,6 +1,8 @@
 import { createTask, deleteTask, getTaskById, getTasks, updateTask } from '../controllers/task.controller';
 
-const taskRouter = require('express').Router();
+import { Router } from 'express';
+
+const taskRouter = Router();
 
 taskRouter.get('/tasks', getTasks);
 taskRouter.get('/tasks/:id', getTaskById);
