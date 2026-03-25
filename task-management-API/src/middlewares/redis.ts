@@ -1,36 +1,35 @@
-import { createClient, RedisClientType } from 'redis';
-import dotenv from 'dotenv';
+// import { createClient, RedisClientType } from 'redis';
+// import dotenv from 'dotenv';
 
-dotenv.config();
+// dotenv.config();
 
-export let redisClient: RedisClientType | undefined;
+// export let redisClient: RedisClientType | undefined;
 
-async function initializeRedisClient() {
-  const redisURL = process.env.REDIS_URI || 'redis://localhost:6379';
-  
-  if (!redisClient) {
-    console.log(`Initializing Redis client with URL: ${redisURL}`);
-    const client = createClient({ 
-      url: redisURL,
-      socket: {
-        connectTimeout: 5000, // 5 seconds timeout
-      }
-    });
+// async function initializeRedisClient() {
+//   const redisURL = process.env.REDIS_URI || 'redis://localhost:6379';
 
-    client.on('error', (err) => {
-      console.error('Redis Client Error:', err);
-    });
+//   if (!redisClient) {
+//     console.log(`Initializing Redis client with URL: ${redisURL}`);
+//     const client = createClient({
+//       url: redisURL,
+//       socket: {
+//         connectTimeout: 5000, // 5 seconds timeout
+//       }
+//     });
 
-    try {
-      await client.connect();
-      redisClient = client as RedisClientType;
-      console.log('Connected to Redis successfully!');
-    } catch (error) {
-      console.error('Could not connect to Redis:', error);
-      redisClient = undefined; 
-    }
-  }
-}
+//     client.on('error', (err) => {
+//       console.error('Redis Client Error:', err);
+//     });
 
-export { initializeRedisClient };
+//     try {
+//       await client.connect();
+//       redisClient = client as RedisClientType;
+//       console.log('Connected to Redis successfully!');
+//     } catch (error) {
+//       console.error('Could not connect to Redis:', error);
+//       redisClient = undefined;
+//     }
+//   }
+// }
 
+// export { initializeRedisClient };

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import taskRouter from './routes/task.route';
 import userRouter from './routes/user.route';
 import { errorMiddleware } from './middlewares/error.middleware';
-import { initializeRedisClient } from './middlewares/redis';
+// import { initializeRedisClient } from './middlewares/redis';
 dotenv.config({ quiet: true });
 
 const initializeExpressServer = async () => {
@@ -11,7 +11,7 @@ const initializeExpressServer = async () => {
     const app = express();
     const port = process.env.PORT || 5000;
     app.use(express.json());
-    await initializeRedisClient();
+    // await initializeRedisClient();
     app.use(taskRouter);
     app.use(userRouter);
     // Centralized error handling middleware
