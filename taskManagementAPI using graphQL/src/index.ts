@@ -1,28 +1,41 @@
+import 'dotenv/config';
 import express from 'express';
-import dotenv from 'dotenv';
-import taskRouter from './routes/task.route';
-import userRouter from './routes/user.route';
-import { errorMiddleware } from './middlewares/error.middleware';
-// import { initializeRedisClient } from './middlewares/redis';
-dotenv.config({ quiet: true });
+import { json } from 'express';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { typeDefs } from './graphql/schema';
+import { formatGraphQLError, resolvers } from './graphql/resolvers';
+import { prisma } from './lib/prisma';
 
-const initializeExpressServer = async () => {
+const initializeGraphQLServer = async () => {
   try {
     const app = express();
     const port = process.env.PORT || 5000;
-    app.use(express.json());
-    // await initializeRedisClient();
-    app.use(taskRouter);
-    app.use(userRouter);
-    // Centralized error handling middleware
-    app.use(errorMiddleware);
+
+    const server = new ApolloServer({
+      typeDefs,
+      resolvers,
+      formatError: (formattedError, error) => formatGraphQLError(formattedError, error.originalError),
+    });
+
+    await server.start();
+
+    app.use(
+      '/graphql',
+      json(),
+      expressMiddleware(server, {
+        context: async () => ({
+          prisma,
+        }),
+      })
+    );
 
     app.listen(port, () => {
-      console.log(`Example app listening on port ${port}`);
+      console.log(`🚀 GraphQL server ready at http://localhost:${port}/graphql`);
     });
   } catch (e) {
     console.error(e);
   }
 };
 
-initializeExpressServer();
+initializeGraphQLServer();
